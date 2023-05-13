@@ -18,12 +18,13 @@ class VAE:
     """
 
     def __init__(self, input_shape, conv_filters, conv_kernels, conv_strides, latent_space_dim):
-        self.input_shape = input_shape # [28, 28, 1]
+        self.input_shape = input_shape # example: [28, 28, 1]
         self.conv_filters = conv_filters # [2,4,8]
         self.conv_kernels = conv_kernels # [3, 5, 3] 3x3, 5x5, 3x3
         self.conv_strides = conv_strides # [1, 2, 2]
         self.latent_space_dim = latent_space_dim # 2
-        self.reconstruction_loss_weight = 1000 # alpha value
+        self.reconstruction_loss_weight = 1000000 # alpha value
+        self.callback = tf.keras.callbacks.EarlyStopping(monitor='loss', min_delta=0.01, patience=2)
 
         self.encoder = None
         self.decoder = None
@@ -45,7 +46,7 @@ class VAE:
         self.model.compile(optimizer=optimizer, loss=self._calculate_combined_loss, metrics=['MeanSquaredError', 'KLDivergence'])
 
     def train(self, x_train, batch_size, num_epochs):
-        self.model.fit(x_train, x_train, batch_size=batch_size, epochs=num_epochs, shuffle=True)
+        self.model.fit(x_train, x_train, batch_size=batch_size, epochs=num_epochs, shuffle=True, callbacks=[self.callback])
 
     def save(self, save_folder="."):
         self._create_folder_if_it_doesnt_exist(save_folder)
