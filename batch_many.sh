@@ -32,8 +32,7 @@
 #################################################
 # Do not change this line unless you have your own python/tensorflow/keras set up
 
-. /home/fagg/tf_setup.sh
-conda activate tf
+source /home/cs504319/miniconda3/bin/activate
 
 # Change this line to start an instance of your experiment
 python train1.py --exp_index 0

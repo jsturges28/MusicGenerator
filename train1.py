@@ -10,7 +10,8 @@ LEARNING_RATE = 0.0005
 BATCH_SIZE = 16
 EPOCHS = 150
 
-SPECTROGRAMS_PATH = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
+#SPECTROGRAMS_PATH = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
+SPECTROGRAMS_PATH = os.path.abspath("./spectrograms/")
 
 def load_mnist():
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
