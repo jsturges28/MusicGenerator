@@ -46,7 +46,8 @@ class VAE:
         self.model.compile(optimizer=optimizer, loss=self._calculate_combined_loss, metrics=['MeanSquaredError', 'KLDivergence'])
 
     def train(self, x_train, batch_size, num_epochs):
-        self.model.fit(x_train, x_train, batch_size=batch_size, epochs=num_epochs, shuffle=True)
+        history = self.model.fit(x_train, x_train, batch_size=batch_size, epochs=num_epochs, shuffle=True)
+        return history
 
     def save(self, save_folder="."):
         self._create_folder_if_it_doesnt_exist(save_folder)
@@ -102,13 +103,23 @@ class VAE:
             self.conv_strides,
             self.latent_space_dim 
         ]
-        save_path = os.path.join(save_folder, "parameters.pkl")
+        save_path = os.path.join(save_folder, "parameters_vae.pkl")
         with open(save_path, "wb") as f:
             pickle.dump(parameters, f)
 
     def _save_weights(self, save_folder):
-        save_path = os.path.join(save_folder, "weights.h5")
+        save_path = os.path.join(save_folder, "weights_vae.h5")
         self.model.save_weights(save_path)
+
+    def _save_history(self, history, save_folder="."):
+        history_dict = history.history  # Convert history object to dict
+
+        # Create save path
+        save_path = os.path.join(save_folder, "history_vae.pkl")
+
+        # Save history data
+        with open(save_path, "wb") as f:
+            pickle.dump(history_dict, f)
 
     def _build(self):
         self._build_encoder()

@@ -7,8 +7,8 @@ import os
 import numpy as np
 
 LEARNING_RATE = 0.0005
-BATCH_SIZE = 16
-EPOCHS = 150
+BATCH_SIZE = 8
+EPOCHS = 2
 
 #SPECTROGRAMS_PATH = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
 SPECTROGRAMS_PATH = os.path.abspath("./spectrograms/")
@@ -48,7 +48,9 @@ def train(x_train, learning_rate, batch_size, epochs):
     
     autoencoder.summary()
     autoencoder.compile(learning_rate)
-    autoencoder.train(x_train, batch_size, epochs)
+    history = autoencoder.train(x_train, batch_size, epochs)
+
+    autoencoder._save_history(history, "model")
 
     return autoencoder
 
