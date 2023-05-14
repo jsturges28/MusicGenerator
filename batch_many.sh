@@ -15,9 +15,8 @@
 # Reasonable partitions: debug_5min, debug_30min, normal
 #
 
-#SBATCH --partition=normal
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --exclusive
+#SBATCH --partition=gpu
 # memory in MB
 #SBATCH --mem=15000
 # The %j is translated into the job number
@@ -31,6 +30,8 @@
 #
 #################################################
 # Do not change this line unless you have your own python/tensorflow/keras set up
+
+module load cuDNN/8.2.1.32-CUDA-11.3.1
 
 source /home/cs504319/miniconda3/bin/activate
 
