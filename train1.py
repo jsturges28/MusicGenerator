@@ -6,9 +6,9 @@ from vae import VAE
 import os
 import numpy as np
 
-LEARNING_RATE = 0.0005
-BATCH_SIZE = 8
-EPOCHS = 2
+LEARNING_RATE = 0.001
+BATCH_SIZE = 32
+EPOCHS = 150
 
 #SPECTROGRAMS_PATH = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
 SPECTROGRAMS_PATH = os.path.abspath("./spectrograms/")
