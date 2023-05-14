@@ -4,15 +4,22 @@ import librosa
 class SoundGenerator:
     """SoundGenerator is responsible for generating audios from spectrograms."""
 
-    def __init__(self, vae, hop_length):
-        self.vae = vae
+    def __init__(self, model, hop_length):
+        self.model = model
         self.hop_length = hop_length
         self._min_max_normalizer = MinMaxNormaliser(0,1)
 
-    def generate(self, spectrograms, min_max_values):
-        generated_spectrograms, latent_representations = self.vae.reconstruct(spectrograms)
+    def generate_vae(self, spectrograms, min_max_values):
+        generated_spectrograms, latent_representations = self.model.reconstruct(spectrograms)
         signals = self.convert_spectrograms_to_audio(generated_spectrograms, min_max_values)
         return signals, latent_representations
+    
+    #UNET has no latent representations in this case
+
+    def generate_unet(self, spectrograms, min_max_values):
+        generated_spectrograms = self.model.reconstruct(spectrograms)
+        signals = self.convert_spectrograms_to_audio(generated_spectrograms, min_max_values)
+        return signals
     
     def convert_spectrograms_to_audio(self, spectrograms, min_max_values):
         signals = []

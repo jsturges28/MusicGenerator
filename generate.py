@@ -6,6 +6,7 @@ import soundfile as sf
 
 from soundgenerator import SoundGenerator
 from vae import VAE
+from unet import UNET
 from train1 import SPECTROGRAMS_PATH
 
 
@@ -45,14 +46,18 @@ def select_spectrograms(spectrograms,
 
 def save_signals(signals, save_dir, sample_rate=22050):
     for i, signal in enumerate(signals):
-        save_path = os.path.join(save_dir, str(i) + ".wav")
+        save_path = os.path.join(save_dir, str(i) + "_unet.wav")
         sf.write(save_path, signal, sample_rate)
 
 
 if __name__ == "__main__":
     # initialise sound generator
-    vae = VAE.load("model")
-    sound_generator = SoundGenerator(vae, HOP_LENGTH)
+
+    #vae = VAE.load("model")
+    #sound_generator = SoundGenerator(vae, HOP_LENGTH)
+
+    unet = UNET.load("model")
+    sound_generator = SoundGenerator(unet, HOP_LENGTH)
 
     # load spectrograms + min max values
     with open(MIN_MAX_VALUES_PATH, "rb") as f:
@@ -67,7 +72,13 @@ if __name__ == "__main__":
                                                                 5)
 
     # generate audio for sampled spectrograms
-    signals, _ = sound_generator.generate(sampled_specs,
+    # VAE
+    '''
+    signals, _ = sound_generator.generate_vae(sampled_specs,
+                                          sampled_min_max_values)
+    '''
+    # UNET
+    signals = sound_generator.generate_unet(sampled_specs,
                                           sampled_min_max_values)
 
     # convert spectrogram samples to audio
