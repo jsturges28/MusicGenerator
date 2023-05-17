@@ -45,9 +45,9 @@ def select_spectrograms(spectrograms,
     print(sampled_min_max_values)
     return sampled_spectrograms, sampled_min_max_values
 
-def save_signals(signals, save_dir, sample_rate=22050):
+def save_signals(signals, save_dir, identifier, extension=".wav", sample_rate=22050):
     for i, signal in enumerate(signals):
-        save_path = os.path.join(save_dir, str(i) + "_unet.wav")
+        save_path = os.path.join(save_dir, "{}_{}{}".format(i, identifier, extension))
         sf.write(save_path, signal, sample_rate)
 
 def create_modified_specs(sampled_specs, sampled_min_max_values):
@@ -58,7 +58,7 @@ def create_modified_specs(sampled_specs, sampled_min_max_values):
                                    for spec, values in zip(sampled_specs, sampled_min_max_values)])
 
     # apply the random modifications
-    modified_denormalized_specs = denormalized_specs + np.random.uniform(-1, 1, denormalized_specs.shape)
+    modified_denormalized_specs = denormalized_specs + np.random.uniform(-5, 5, denormalized_specs.shape)
 
     # compute new min and max values
     new_min_values = np.min(modified_denormalized_specs, axis=(1, 2))
@@ -79,11 +79,11 @@ def create_modified_specs(sampled_specs, sampled_min_max_values):
 if __name__ == "__main__":
     # initialise sound generator
 
-    #vae = VAE.load("model")
-    #sound_generator = SoundGenerator(vae, HOP_LENGTH)
+    vae = VAE.load("model")
+    sound_generator = SoundGenerator(vae, HOP_LENGTH)
 
     unet = UNET.load("model")
-    sound_generator = SoundGenerator(unet, HOP_LENGTH)
+    sound_generator1 = SoundGenerator(unet, HOP_LENGTH)
 
     # load spectrograms + min max values
     with open(MIN_MAX_VALUES_PATH, "rb") as f:
@@ -103,15 +103,18 @@ if __name__ == "__main__":
 
     # generate audio for sampled spectrograms
     # VAE
-    '''
-    signals, _ = sound_generator.generate_vae(sampled_specs,
-                                          sampled_min_max_values)
-    '''
-    # UNET
-    signals = sound_generator.generate_unet(sampled_specs,
+    
+    vae_signals, latent_representations = sound_generator.generate_vae(sampled_specs,
                                           sampled_min_max_values)
     
-    modified_signals = sound_generator.generate_unet(modified_sample_specs,
+    modified_signals_vae, _ = sound_generator.generate_vae(modified_sample_specs,
+                                          modified_min_max_values)
+    
+    # UNET
+    unet_signals = sound_generator1.generate_unet(sampled_specs,
+                                          sampled_min_max_values)
+    
+    modified_signals_unet = sound_generator1.generate_unet(modified_sample_specs,
                                           modified_min_max_values)
 
     # convert spectrogram samples to audio
@@ -119,7 +122,9 @@ if __name__ == "__main__":
         sampled_specs, sampled_min_max_values)
 
     # save audio signals
-    save_signals(signals, SAVE_DIR_GENERATED)
-    save_signals(modified_signals, SAVE_DIR_MODIFIED)
-    save_signals(original_signals, SAVE_DIR_ORIGINAL)
+    save_signals(unet_signals, SAVE_DIR_GENERATED, "unet_generated")
+    save_signals(vae_signals, SAVE_DIR_GENERATED, "vae_generated")
+    save_signals(modified_signals_unet, SAVE_DIR_MODIFIED, "unet_modified")
+    save_signals(modified_signals_vae, SAVE_DIR_MODIFIED, "vae_modified")
+    save_signals(original_signals, SAVE_DIR_ORIGINAL, "original")
     
