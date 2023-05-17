@@ -52,9 +52,6 @@ def calculate_corrcoef():
     generated_files = os.listdir(generated_dir)
     modified_files = os.listdir(modified_dir)
 
-    print(f'Generated files: {generated_files}')  # Debug print
-    print(f'Modified files: {modified_files}')  # Debug print
-
     # for each generated file
     for gen_file in generated_files:
         # find the corresponding modified file

@@ -17,10 +17,11 @@ def display_learning_curve_set(dir, base):
         with open("%s/%s"%(dir,f), "rb") as fp:
             history = pickle.load(fp)
             plt.plot(history['loss'])
+    plt.title("Combined Loss Function Value Over Time")
     plt.ylabel('RMSE + KL divergence loss')
-    plt.xlabel('epochs')
-    plt.legend(files)
-    plt.legend(files, fontsize='small')
+    plt.xlabel('Epochs')
+    plt.legend([file.split('_')[1].split('.')[0] for file in files], fontsize='small')
+    #plt.legend(files, fontsize='small')
     plt.savefig('data.png')
 
 if __name__ == "__main__":
