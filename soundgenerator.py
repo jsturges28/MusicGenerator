@@ -17,6 +17,7 @@ class SoundGenerator:
     #UNET has no latent representations in this case
 
     def generate_unet(self, spectrograms, min_max_values):
+        print(spectrograms[0].shape)
         generated_spectrograms = self.model.reconstruct(spectrograms)
         signals = self.convert_spectrograms_to_audio(generated_spectrograms, min_max_values)
         return signals

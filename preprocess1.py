@@ -9,6 +9,7 @@ PreprocessingPipeline
 """
 import os
 import pickle
+import platform
 
 import librosa
 import numpy as np
@@ -180,13 +181,17 @@ class PreprocessingPipeline:
 if __name__ == "__main__":
     FRAME_SIZE = 512
     HOP_LENGTH = 256
-    DURATION = 0.74  # in seconds
+    DURATION = 30  # in seconds
     SAMPLE_RATE = 22050
     MONO = True
 
-    SPECTROGRAMS_SAVE_DIR = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
-    MIN_MAX_VALUES_SAVE_DIR =  os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/")
-    FILES_DIR = os.path.abspath("C:/Users/stur8980/Documents/GitHub/free-spoken-digit-dataset/recordings/")
+    #SPECTROGRAMS_SAVE_DIR = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
+    #MIN_MAX_VALUES_SAVE_DIR =  os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/")
+    #FILES_DIR = os.path.abspath("C:/Users/stur8980/Documents/GitHub/free-spoken-digit-dataset/recordings/")
+
+    SPECTROGRAMS_SAVE_DIR = os.path.abspath("/Users/jettsturges/Documents/GitHub/MusicGenerator/music_spectrograms/")
+    MIN_MAX_VALUES_SAVE_DIR =  os.path.abspath("/Users/jettsturges/Documents/GitHub/MusicGenerator")
+    FILES_DIR = os.path.abspath("/Users/jettsturges/Documents/GitHub/MusicGenerator/recordings/")
 
     # instantiate all objects
     loader = Loader(SAMPLE_RATE, DURATION, MONO)

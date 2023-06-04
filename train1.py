@@ -9,10 +9,10 @@ import numpy as np
 
 LEARNING_RATE = 0.0005
 BATCH_SIZE = 16
-EPOCHS = 2
+EPOCHS = 50
 
 #SPECTROGRAMS_PATH = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
-SPECTROGRAMS_PATH = os.path.abspath("./spectrograms/")
+SPECTROGRAMS_PATH = os.path.abspath("./music_spectrograms/")
 
 def load_mnist():
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -31,6 +31,7 @@ def load_fsdd(spectrograms_path):
         for file_name in file_names:
             file_path = os.path.join(root, file_name)
             spectrogram = np.load(file_path) # (n_bins, n_frames)
+            
             x_train.append(spectrogram)
 
     x_train = np.array(x_train)
@@ -51,12 +52,12 @@ def train_vae(x_train, learning_rate, batch_size, epochs):
     autoencoder.compile(learning_rate)
     history = autoencoder.train(x_train, batch_size, epochs)
 
-    autoencoder._save_history(history, "model")
+    autoencoder._save_history(history, "model_music")
 
     return autoencoder
 
 def train_unet(x_train, learning_rate, batch_size, epochs):
-    unet = UNET(input_shape=[256,64,1],
+    unet = UNET(input_shape=[256,2584,1],
                               conv_filters=[64,128,256],
                               conv_kernels=[3], 
                               conv_strides=[2])
@@ -65,7 +66,7 @@ def train_unet(x_train, learning_rate, batch_size, epochs):
     unet.compile(learning_rate)
     history = unet.train(x_train, batch_size, epochs)
 
-    unet._save_history(history, "model")
+    unet._save_history(history, "model_music")
 
     return unet
 
@@ -76,7 +77,7 @@ if __name__ == "__main__":
     #autoencoder.save("model")
 
     unet = train_unet(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
-    unet.save("model")
+    unet.save("model_music")
 
     #autoencoder2 = Autoencoder.load("model")
     #autoencoder2.summary()

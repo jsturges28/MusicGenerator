@@ -165,7 +165,7 @@ class UNET:
     
 
 if __name__ == '__main__':
-    unet = UNET(input_shape=[32,32,1],
+    unet = UNET(input_shape=[64,2584,1],
                               conv_filters=[64,128,256],
                               conv_kernels=[3], 
                               conv_strides=[1, 2, 2, 1])
