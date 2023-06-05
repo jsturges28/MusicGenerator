@@ -4,6 +4,7 @@ from keras.datasets import mnist
 from autoencoder import Autoencoder
 from vae import VAE
 from unet import UNET
+from ganunet import GANUNET
 import os
 import numpy as np
 
@@ -11,8 +12,8 @@ LEARNING_RATE = 0.0005
 BATCH_SIZE = 16
 EPOCHS = 50
 
-#SPECTROGRAMS_PATH = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
-SPECTROGRAMS_PATH = os.path.abspath("./music_spectrograms/")
+SPECTROGRAMS_PATH = os.path.abspath("C:/Users/stur8980/Documents/GitHub/MusicGenerator/spectrograms/")
+#SPECTROGRAMS_PATH = os.path.abspath("./music_spectrograms/")
 
 def load_mnist():
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -70,14 +71,31 @@ def train_unet(x_train, learning_rate, batch_size, epochs):
 
     return unet
 
+def train_ganunet(x_train, learning_rate, batch_size, epochs):
+    ganunet = GANUNET(input_shape=[256,64,1],
+                              conv_filters=[64,128,256],
+                              conv_kernels=[3], 
+                              conv_strides=[2])
+    
+    ganunet.summary()
+    ganunet.compile(learning_rate)
+    history = ganunet.train(x_train, batch_size, epochs)
+
+    ganunet._save_history(history, "model")
+
+    return ganunet
+
 if __name__ == "__main__":
     x_train = load_fsdd(SPECTROGRAMS_PATH)
     #autoencoder = train_vae(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
 
     #autoencoder.save("model")
 
-    unet = train_unet(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
-    unet.save("model_music")
+    #unet = train_unet(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
+    #unet.save("model_music")
+
+    ganunet = train_ganunet(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
+    ganunet.save("model")
 
     #autoencoder2 = Autoencoder.load("model")
     #autoencoder2.summary()
